@@ -23,15 +23,17 @@ def randomRotation(n_dim):
         u = v - np.sum(np.dot(v,e)*e for e in gsBasis)
         gsBasis.append(u/np.linalg.norm(u))
     rotationMatrix = np.array(gsBasis).T
+
     return rotationMatrix
 
 
 # Tests
-
 a = randomRotation(3)
 np.linalg.det(a)
 np.linalg.norm(a, axis = 0)
+a.dot(a.T)- np.identity(3)<1e-10
 
 b= randomRotation(22)
 np.linalg.det(b)
 np.linalg.norm(b, axis = 0)
+b.dot(b.T)- np.identity(22)<1e-10
