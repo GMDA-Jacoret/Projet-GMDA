@@ -3,7 +3,7 @@ from random import sample, randint
 
 
 def createtestdata3(n,d,k):
-    """Creates a data set for which each points has at most k nonzeros coordinates
+    """Creates a data set for which each point has at most k nonzeros coordinates
 
     n : number of points
     d : number of coordinates
@@ -24,3 +24,19 @@ def createtestdata3(n,d,k):
     return test3
 
 test3 = createtestdata3(100, 20, 10)
+
+
+def createtestdata2(n,d):
+    """Creates a data set for which each point belongs to one of the [-1,1] segment along the axises
+
+    n : number of points
+    d : number of coordinates
+    """
+
+    test2 = np.zeros((n,d))
+    for i in range(test2.shape[0]):
+        axis = randint(0,d-1)
+        test2[i, axis] = 2*np.random.rand() - 1
+    return test2
+
+test2 = createtestdata2(100, 5)
