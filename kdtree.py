@@ -5,57 +5,69 @@
 # 3.S− ={x∈S : ⟨x,vi⟩≤m+δ};S+ =S\S−.
 # 4.T− =KD-Tree(S−,V,i modn+1);T+ =KD-Tree(S+,V,i modn+1). 5. Return [T −, T +].
 
-# class KdTree:
-#     """Classe définissant un arbre caractérisé par :
-#     - son diamètre
-#     - un sous arbre droit
-#     - un sous arbre gauche
-#     """
-#     def __init__(self, data):
-#         self.data = data
-#         self.diam = diameter(data)
-#
-#
-#     def get_diameter(self):
-#         diameter()
+class KdTree:
+    """Classe définissant un arbre caractérisé par :
+    - son diamètre
+    - un sous arbre droit
+    - un sous arbre gauche
+    """
+    def __init__(self, projection, split):
+        self.projection = projection
+        self.split = split
+        self.children = np.empty(2)
+
+    def add_right_child(self, obj):
+        self.children.append(obj)
+
+    def add_left_child(self, obj):
+        self.children.append(obj)
+
 
 import pandas as pd
-import random
+from random import random, choice, uniform
 import numpy as np
-import scipy
+from scipy import sqrt
 from scipy.stats import ortho_group
 from sklearn.preprocessing import scale
 
-from diameter import brute_force_diameter
+from diameter import *
 from createtestdata3 import createtestdata3
-compt = 1
 
 def kdtree(data, RM, i):
     """Returns a kd-tree of the data
     """
-    print('%i appel' % compt)
+    print('appel')
     n = data.shape[0]
-    d = data.shape[0]
-    if n == 1:
+    d = data.shape[1]
+    if n <= 10:
         return data
     else :
-        diam = brute_force_diameter(data)
-        eps = 3*diam/scipy.sqrt(n)
-        delta = random.uniform(-eps,eps)
-        # Rotate the data
-        M = data.dot(RM)
         # Projection vector
         v = RM[:,i]
+        # Projected data
+        p = data.dot(v)
         # Median of data projected on this vector
-        m = np.median(M[:,i])
+        m = np.median(p)
+        if False:
+            diam = brute_force_diameter(data)
+            eps = 3*diam/sqrt(d)
+        else:
+            diam = diam_approx(data)
+            eps = choice([-1,1]) * diam / sqrt(d)
+        delta = uniform(-eps,eps)
+        split = m + delta
+        kdtree = KdTree(v, split)
         # Right and left trees
-        Sminus = data[M[:,i] <= m+delta]
-        Splus = data[M[:,i] > m+delta]
+        Sminus = data[p <= split]
+        Splus = data[p > split]
         Tminus = kdtree(Sminus, RM, i % (d+1))
         Tplus = kdtree(Splus, RM, i % (d+1))
-    return [Tminus, Tplus]
+        kdtree.add_right_child(Tminus)
+        kdtree.add_left_child(Tplus)
+    return kdtree
 
 data = createtestdata3(100, 20, 10)
+diam_approx(data)
 RM = ortho_group.rvs(dim=data.shape[1])
 
-kdtree(data, RM, 0)
+tree = kdtree(data, RM, 0)

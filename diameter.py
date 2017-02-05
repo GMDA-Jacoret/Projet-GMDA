@@ -4,6 +4,7 @@ import pandas as pd
 import scipy as sp
 import numpy as np
 
+from random import choice
 from sklearn.preprocessing import scale
 
 data = pd.read_csv('data.csv')
@@ -25,3 +26,16 @@ def brute_force_diameter(data):
     return diam
 
 # Wall time 1min53s
+
+def diam_approx(data):
+    """Rough approximation of diameter
+
+    Input : scaled numpy array
+    Output : diameter (float)
+    """
+    x = choice(data)
+    diam = 0
+    for y in data :
+        if np.linalg.norm(x-y) > diam:
+            diam = np.linalg.norm(x-y)
+    return diam
