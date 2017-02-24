@@ -28,4 +28,4 @@ for i, data in enumerate(Data1):
         print("\njit coeff : %.2f" %jit)
         Results[i,j] = testTree(data, cell_size=10, max_depth=10, jit=jit)
 
-Results
+print('\n'.join([''.join(['{:40}'.format("Start="+str(item[0])+" Reached_at="+str(item[1])+" Ratio="+str('%.2f' %item[2])) for item in row]) for row in Results]))
