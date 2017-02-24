@@ -1,5 +1,8 @@
 import numpy as np
 
+
+# RM = ortho_group.rvs(dim=data.shape[1])
+
 def randomRotation(n_dim):
     """Generates a random rotation matrix
 
