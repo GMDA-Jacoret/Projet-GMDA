@@ -70,7 +70,7 @@ def create(data, RM, i=0, cell_size=10, max_depth = 15, jit=0.1, depth=0):
     print('.', end="")
     n = data.shape[0]
     d = data.shape[1]
-    if ((n <= cell_size) | (depth == max_depth)):
+    if ((n <= cell_size) or (depth == max_depth)):
         return KdTree(data=data)
     else:
         # Projection vector
