@@ -40,7 +40,7 @@ def createTD2(n, d, k):
     return test2
 
 
-def testTree(data, cell_size, max_depth, jit):
+def testTree(data, cs, md, jit):
     """Tests the results of the theorem on a given point set by picking a
     random cell and randomly travel down the tree to find the cell that halves
     the diameter of the initially picked cell.
@@ -48,7 +48,7 @@ def testTree(data, cell_size, max_depth, jit):
 
     logging.info("La graine est plantée.")
     RM = randomRotation(data.shape[1])
-    t = create(data, RM, cell_size=cell_size, max_depth=max_depth, jit=jit, )
+    t = create(data, RM, cell_size=cs, max_depth=md, jitter=jit, )
     total_depth = t.depth()
     logging.info("\nUn arbre de profondeur %i a poussé" % total_depth)
 
@@ -65,15 +65,13 @@ def testTree(data, cell_size, max_depth, jit):
     depth2 = 1
     ratio = 1
     t2 = t1.random_subtree(1)
-    while ((ratio > .5) and (total_depth - depth2 >= 0)):
+    while ((ratio > .5) and (total_depth - depth1 - depth2 >= 0)):
         Cprime = t2.get_data()
         d2 = brute_force_diameter(Cprime)
         ratio = d2 / d1
-        logging.info("Ratio %i noeuds plus loin : %f " % (depth2, ratio))#, end="")
+        logging.info("Ratio %i noeuds plus loin : %f" % (depth2, ratio))
         if ratio <= 0.5:
             logging.info(" ==>  c'est un BINGO !")
-        else:
-            logging.info("")
         depth2 += 1
         t2 = t2.random_subtree(1)
 

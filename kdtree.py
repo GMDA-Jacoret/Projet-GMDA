@@ -66,7 +66,7 @@ class KdTree:
         return brute_force_diameter(self.get_data())
 
 
-def create(data, RM, i=0, cell_size=10, max_depth=15, jit=0.1, depth=0):
+def create(data, RM, i=0, cell_size=10, max_depth=15, jitter=0.1, depth=0):
     """Returns a kd-tree of the data
     """
     logging.debug('.', end="")
@@ -83,7 +83,7 @@ def create(data, RM, i=0, cell_size=10, max_depth=15, jit=0.1, depth=0):
         m = np.median(p)
         if True:
             diam = diam_approx(data)
-            eps = jit * diam / sqrt(d)
+            eps = jitter * diam / sqrt(d)
             delta = uniform(-eps, eps)
             split = m + delta
         else:
