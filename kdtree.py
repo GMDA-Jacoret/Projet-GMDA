@@ -3,6 +3,8 @@ from scipy import sqrt, exp, log
 from scipy.stats import ortho_group
 from random import choice, uniform, random, randint
 from diameter import brute_force_diameter, diam_approx
+import logging
+logging.basicConfig(filename='log_filename.txt', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class KdTree:
@@ -64,10 +66,10 @@ class KdTree:
         return brute_force_diameter(self.get_data())
 
 
-def create(data, RM, i=0, cell_size=10, max_depth = 15, jit=0.1, depth=0):
+def create(data, RM, i=0, cell_size=10, max_depth=15, jit=0.1, depth=0):
     """Returns a kd-tree of the data
     """
-    print('.', end="")
+    logging.debug('.', end="")
     n = data.shape[0]
     d = data.shape[1]
     if ((n <= cell_size) or (depth == max_depth)):

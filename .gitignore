@@ -1,4 +1,6 @@
 *.pdf
-*.csv
+data.csv
 venv
 __pycache__
+*.sublime-workspace
+*.txt
