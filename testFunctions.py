@@ -4,7 +4,7 @@ from randomRotation import randomRotation
 from kdtree import *
 from diameter import brute_force_diameter, diam_approx
 import logging
-logging.basicConfig(filename='log_filename.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='test_log.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def createTD1(n, d):
@@ -45,7 +45,8 @@ def testTree(data, cs, md, jit):
     random cell and randomly travel down the tree to find the cell that halves
     the diameter of the initially picked cell.
     """
-
+    logging.info("> Dataset de dimensions (%i,%i) et jit coeff %.2f"
+            % (data.shape[0], data.shape[1], jit))
     logging.info("La graine est plantée.")
     RM = randomRotation(data.shape[1])
     t = create(data, RM, cell_size=cs, max_depth=md, jitter=jit, )
@@ -55,7 +56,8 @@ def testTree(data, cs, md, jit):
     # Pick a random cell in first half of the tree
     depth1 = randint(0, np.floor(total_depth / 2))
     d1 = 0
-    while d1 == 0:
+    t1 = KdTree()
+    while (d1 == 0 or t1.is_leaf()):
         t1 = t.random_subtree(depth1)
         C = t1.get_data()
         d1 = brute_force_diameter(C)
@@ -64,16 +66,20 @@ def testTree(data, cs, md, jit):
     # Find the cell that halves the diameter by randomly going down the tree
     depth2 = 1
     ratio = 1
-    t2 = t1.random_subtree(1)
+    t2 = t1
     while ((ratio > .5) and (total_depth - depth1 - depth2 >= 0)):
+        try:
+            t2 = t2.random_subtree(depth2)
+        except ValueError:
+            print("fuck.")
+            logging.info("oooh noooooooooon.")
+            return [depth1, None, None]
         Cprime = t2.get_data()
         d2 = brute_force_diameter(Cprime)
         ratio = d2 / d1
         logging.info("Ratio %i noeuds plus loin : %f" % (depth2, ratio))
-        if ratio <= 0.5:
-            logging.info(" ==>  c'est un BINGO !")
         depth2 += 1
-        t2 = t2.random_subtree(1)
 
     # Save result
+    logging.info(" ==>  c'est un BINGO !")
     return [depth1, depth2, ratio]

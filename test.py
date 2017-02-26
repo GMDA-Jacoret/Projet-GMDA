@@ -6,10 +6,10 @@ from scipy import log
 import numpy as np
 import pandas as pd
 import logging
-logging.basicConfig(filename='log_filename.txt', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='test_log.txt', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # --- Variables à itérer ---
-D = [2, 5, 10,]# 20, 50, 100]
+D = [2, 5, 10]#, 20, 50, 100]
 Jit = [0.01, 0.1, 1, 3]#, 10]
 
 # Results = np.empty((len(D), len(Jit)), dtype=object)

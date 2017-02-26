@@ -4,7 +4,7 @@ from scipy.stats import ortho_group
 from random import choice, uniform, random, randint
 from diameter import brute_force_diameter, diam_approx
 import logging
-logging.basicConfig(filename='log_filename.txt', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='test_log.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class KdTree:
@@ -45,22 +45,25 @@ class KdTree:
 
     def random_subtree(self, depth):
         """Get a random subtree at a given depth"""
-        if self.is_leaf():
+        if depth == 0:
             return self
         else:
-            if depth == 0:
-                return self
-            else:
-                if choice([True, False]):
-                    if self.has_right_child():
-                        return self.right.random_subtree(depth - 1)
-                    else:
-                        return self
-                else:
-                    if self.has_left_child():
+            if choice([True, False]):
+                try:
+                    return self.right.random_subtree(depth - 1)
+                except:
+                    try:
                         return self.left.random_subtree(depth - 1)
-                    else:
-                        return self
+                    except:
+                        raise ValueError('Pas de noeud à cette profondeur')
+            else:
+                try:
+                    return self.left.random_subtree(depth - 1)
+                except:
+                    try:
+                        return self.right.random_subtree(depth - 1)
+                    except:
+                        raise ValueError('Pas de noeud à cette profondeur')
 
     def get_brute_force_diameter(self):
         return brute_force_diameter(self.get_data())
@@ -69,7 +72,7 @@ class KdTree:
 def create(data, RM, i=0, cell_size=10, max_depth=15, jitter=0.1, depth=0):
     """Returns a kd-tree of the data
     """
-    logging.debug('.', end="")
+    logging.debug('.')
     n = data.shape[0]
     d = data.shape[1]
     if ((n <= cell_size) or (depth == max_depth)):
