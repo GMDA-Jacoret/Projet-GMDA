@@ -1,10 +1,11 @@
 import numpy as np
 from random import sample, randint
 from randomRotation import randomRotation
-from kdtree import *
-from diameter import brute_force_diameter, diam_approx
+from kdtree import KdTree, create
+from diameter import brute_force_diameter
 import logging
-logging.basicConfig(filename='test_log.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='test_log.txt', level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def createTD1(n, d):
@@ -46,7 +47,7 @@ def testTree(data, cs, md, jit):
     the diameter of the initially picked cell.
     """
     logging.info("> Dataset de dimensions (%i,%i) et jit coeff %.2f"
-            % (data.shape[0], data.shape[1], jit))
+                 % (data.shape[0], data.shape[1], jit))
     logging.info("La graine est plantée.")
     RM = randomRotation(data.shape[1])
     t = create(data, RM, cell_size=cs, max_depth=md, jitter=jit, )
@@ -64,22 +65,22 @@ def testTree(data, cs, md, jit):
     logging.info("Diamètre à la profondeur %i : %f " % (depth1, d1))
 
     # Find the cell that halves the diameter by randomly going down the tree
-    depth2 = 1
+    additional_depth = 1
+    depth1 = t1.depth()
     ratio = 1
-    t2 = t1
-    while ((ratio > .5) and (total_depth - depth1 - depth2 >= 0)):
+    while ((ratio > .5) and (additional_depth <= depth1)):
         try:
-            t2 = t2.random_subtree(depth2)
+            t2 = t1.random_subtree(additional_depth)
         except ValueError:
-            print("fuck.")
-            logging.info("oooh noooooooooon.")
+            logging.error("oooh noooooooooon.")
             return [depth1, None, None]
         Cprime = t2.get_data()
         d2 = brute_force_diameter(Cprime)
         ratio = d2 / d1
-        logging.info("Ratio %i noeuds plus loin : %f" % (depth2, ratio))
-        depth2 += 1
+        logging.info("Ratio %i noeuds plus loin : %f"
+                     % (additional_depth, ratio))
+        additional_depth += 1
 
     # Save result
     logging.info(" ==>  c'est un BINGO !")
-    return [depth1, depth2, ratio]
+    return [depth1, additional_depth, ratio]

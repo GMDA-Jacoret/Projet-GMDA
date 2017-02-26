@@ -10,7 +10,7 @@ logging.basicConfig(filename='test_log.txt', level=logging.INFO, format='%(ascti
 
 # --- Variables à itérer ---
 D = [2, 5, 10]#, 20, 50, 100]
-Jit = [0.01, 0.1, 1, 3]#, 10]
+Jit = [0.01, 0.1]#, 1, 3]#, 10]
 
 # Results = np.empty((len(D), len(Jit)), dtype=object)
 results = pd.DataFrame(columns=['test_id', 'n', 'd', 'jit_coef',  'picked_depth',
