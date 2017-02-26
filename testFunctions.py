@@ -46,41 +46,56 @@ def testTree(data, cs, md, jit):
     random cell and randomly travel down the tree to find the cell that halves
     the diameter of the initially picked cell.
     """
-    logging.info("> Dataset de dimensions (%i,%i) et jit coeff %.2f"
+    logging.info(">>> DS of dim (%i,%i) and jit coeff %.2f"
                  % (data.shape[0], data.shape[1], jit))
-    logging.info("La graine est plantée.")
+
     RM = randomRotation(data.shape[1])
     t = create(data, RM, cell_size=cs, max_depth=md, jitter=jit, )
     total_depth = t.depth()
-    logging.info("\nUn arbre de profondeur %i a poussé" % total_depth)
+    logging.info("    Tree of size %i has grown." % total_depth)
 
-    # Pick a random cell in first half of the tree
+    # Pick a random node in first half of the tree that is not a leaf and
+    # with non-zero diameter
     depth1 = randint(0, np.floor(total_depth / 2))
-    d1 = 0
     t1 = KdTree()
-    while (d1 == 0 or t1.is_leaf()):
+    d1 = 0
+    while (d1==0 or t1.is_leaf()):
+        logging.info("    *")
         t1 = t.random_subtree(depth1)
         C = t1.get_data()
         d1 = brute_force_diameter(C)
-    logging.info("Diamètre à la profondeur %i : %f " % (depth1, d1))
+        depth1 = randint(0, np.floor(total_depth / 2))
 
-    # Find the cell that halves the diameter by randomly going down the tree
+    logging.info("    Diameter at depth %i : %f " % (depth1, d1))
+
+    # Find a depth with a cell that halves the diameter by randomly going down the tree
     additional_depth = 1
-    depth1 = t1.depth()
+    depth2 = t1.depth()
+    logging.info("    Depth of chosen subtree %i" % depth2)
+
     ratio = 1
-    while ((ratio > .5) and (additional_depth <= depth1)):
+    while (additional_depth <= depth2):
         try:
             t2 = t1.random_subtree(additional_depth)
         except ValueError:
-            logging.error("oooh noooooooooon.")
+            logging.info("==> Failed!")
             return [depth1, None, None]
         Cprime = t2.get_data()
         d2 = brute_force_diameter(Cprime)
         ratio = d2 / d1
-        logging.info("Ratio %i noeuds plus loin : %f"
+        logging.info("    Ratio %i nodes deeper : %f"
                      % (additional_depth, ratio))
+
+
+        if (ratio <= .5):
+            # Explore obtained depth
+            bingo = t1.diams_miner(additional_depth, .5*d1)
+            if bingo:
+                logging.info("==> it's a BINGO!")
+                return [depth1, additional_depth]
+
         additional_depth += 1
 
+    logging.info("==> Reached max depth")
     # Save result
-    logging.info(" ==>  c'est un BINGO !")
-    return [depth1, additional_depth, ratio]
+    return [depth1, None]

@@ -4,7 +4,7 @@ from scipy.stats import ortho_group
 from random import choice, uniform, random, randint
 from diameter import brute_force_diameter, diam_approx
 import logging
-logging.basicConfig(filename='test_log.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='test_log.txt', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class KdTree:
@@ -68,6 +68,32 @@ class KdTree:
     def get_brute_force_diameter(self):
         return brute_force_diameter(self.get_data())
 
+    def diams_explorer(self, depth):
+        if depth == 0:
+            return self
+        else:
+            try:
+                return self.left.diams_explorer(depth - 1)
+            except:
+                try:
+                    return self.right.random_subtree(depth - 1)
+                except:
+                    raise ValueError('Pas de noeud à cette profondeur')
+
+    def diams_miner(self, depth, threshold):
+        if depth == 0:
+            d = brute_force_diameter(self.data)
+            logging.info("        mined ratio = %f" % (.5*d/threshold))
+            if d > threshold:
+                logging.info("        failure")
+                return False
+            else:
+                logging.info("        goood")
+                return True
+        elif self.is_leaf():
+            return True
+        else:
+            return (self.right.diams_miner(depth - 1, threshold) and self.left.diams_miner(depth - 1, threshold))
 
 def create(data, RM, i=0, cell_size=10, max_depth=15, jitter=0.1, depth=0):
     """Returns a kd-tree of the data
