@@ -2,7 +2,6 @@
 
 from testFunctions import createTD1, createTD2, testTree
 from kdtree import create
-from scipy import log
 import numpy as np
 import pandas as pd
 import logging
@@ -36,14 +35,14 @@ for test_id in [1, 2]:
 
 # Doubling dimension
 results.loc[results.test_id == 1,
-            'dd'] = log(results.loc[results.test_id == 1, 'n'])
+            'dd'] = np.log(results.loc[results.test_id == 1, 'n'])
 
 results.loc[results.test_id == 2,
-            'dd'] = np.floor(d/2)*log(results.loc[results.test_id == 2, 'n'])
+            'dd'] = np.floor(d/2)*np.log(results.loc[results.test_id == 2, 'n'])
 
 # Constantes
-results['c0'] = results.dd * log(results.dd) / results.n
-results['c2'] = results.halving_depth / results.dd*log(results.dd)
+results['c0'] = results.dd * np.log(results.dd) / results.n
+results['c2'] = results.halving_depth / results.dd*np.log(results.dd)
 
 # Export
 results[['test_id', 'n', 'd', 'picked_depth']] = results[['test_id', 'n', 'd', 'picked_depth']].astype(int)
