@@ -1,15 +1,8 @@
 # -*- coding : utf8 -*-
 
-import pandas as pd
-import scipy as sp
 import numpy as np
-
 from random import choice
-from sklearn.preprocessing import scale
 
-data = pd.read_csv('data.csv')
-data = data.as_matrix()
-data = scale(data)
 
 def brute_force_diameter(data):
     """Computes the exact diameter using brute force computation
@@ -25,7 +18,6 @@ def brute_force_diameter(data):
                 diam = dist
     return diam
 
-# Wall time 1min53s
 
 def diam_approx(data):
     """Rough approximation of diameter
@@ -35,7 +27,7 @@ def diam_approx(data):
     """
     x = choice(data)
     diam = 0
-    for y in data :
+    for y in data:
         if np.linalg.norm(x-y) > diam:
             diam = np.linalg.norm(x-y)
     return diam
