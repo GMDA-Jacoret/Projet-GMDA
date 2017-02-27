@@ -8,35 +8,35 @@ logging.basicConfig(filename='test_log.txt', level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-def createTD1(n, d):
+def createTD1(m, n):
     """Creates a data set for which each point belongs to
     one of the [-1,1] segment along the axises
 
     n : number of points
     d : number of coordinates
     """
-    test1 = np.zeros((n, d))
+    test1 = np.zeros((m, n))
     for i in range(test1.shape[0]):
-        axis = randint(0, d - 1)
+        axis = randint(0, n - 1)
         test1[i, axis] = 2 * np.random.rand() - 1
     return test1
 
 
-def createTD2(n, d, k):
+def createTD2(m, n, k):
     """Creates a data set for which each point has at most k nonzeros coordinates
 
     n : number of points
     d : number of coordinates
     k : maximum number of nonzero coordinates (must be < d)
     """
-    if k > d:
+    if k > n:
         raise ValueError("Number of non-zero coordinates must be inferior to"
                          " the number of coordinates")
 
-    test2 = np.zeros((n, d))
+    test2 = np.zeros((m, n))
     for i in range(test2.shape[0]):
         n_nonzero = randint(0, k)
-        nonzeros = sample(range(d), n_nonzero)
+        nonzeros = sample(range(n), n_nonzero)
         test2[i, nonzeros] = np.random.rand(n_nonzero)
     return test2
 
@@ -85,7 +85,6 @@ def testTree(data, cs, md, jit):
         ratio = d2 / d1
         logging.info("    Ratio %i nodes deeper : %f"
                      % (additional_depth, ratio))
-
 
         if (ratio <= .5):
             # Explore obtained depth

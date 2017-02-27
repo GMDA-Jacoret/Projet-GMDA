@@ -99,9 +99,9 @@ def create(data, RM, i=0, cell_size=10, max_depth=50, jitter=0.1, depth=0):
             max_depth : maximal depth of constructed tree
     """
     logging.debug('.')
-    n = data.shape[0]
-    d = data.shape[1]
-    if ((n <= cell_size) or (depth == max_depth)):
+    m = data.shape[0]
+    n = data.shape[1]
+    if ((m <= cell_size) or (depth == max_depth)):
         return KdTree(data=data)
     else:
         # Projection vector
@@ -109,16 +109,16 @@ def create(data, RM, i=0, cell_size=10, max_depth=50, jitter=0.1, depth=0):
         # Projected data
         p = data.dot(v)
         # Median of data projected on this vector
-        m = np.median(p)
+        med = np.median(p)
         # Jittered split
         diam = diam_approx(data)
-        eps = jitter * diam / sqrt(d)
+        eps = jitter * diam / sqrt(n)
         delta = uniform(-eps, eps)
-        split = m + delta
+        split = med + delta
         # Right and left sub-treess
         Sright = data[p <= split]
         Sleft = data[p > split]
-        Tright = create(Sright, RM, (i + 1) % d, depth=depth + 1)
-        Tleft = create(Sleft, RM, (i + 1) % d, depth=depth + 1)
+        Tright = create(Sright, RM, (i + 1) % n, depth=depth + 1)
+        Tleft = create(Sleft, RM, (i + 1) % n, depth=depth + 1)
         kdtree = KdTree(data, Tright, Tleft, i, split)
     return kdtree
