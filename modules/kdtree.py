@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import sqrt
 from random import choice, uniform
-from diameter import brute_force_diameter, diam_approx
+from modules.diameter import brute_force_diameter, diam_approx
 import logging
 logging.basicConfig(filename='test_log.txt', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -61,7 +61,7 @@ class KdTree:
                     try:
                         return self.left.random_subtree(depth - 1)
                     except:
-                        raise ValueError('Pas de noeud à cette profondeur')
+                        raise ValueError('No node at this depth')
             else:
                 try:
                     return self.left.random_subtree(depth - 1)
@@ -69,7 +69,7 @@ class KdTree:
                     try:
                         return self.right.random_subtree(depth - 1)
                     except:
-                        raise ValueError('Pas de noeud à cette profondeur')
+                        raise ValueError('No node at this depth')
 
     def diams_miner(self, depth, threshold):
         """Returns True if all cells at a given depth have a diameter

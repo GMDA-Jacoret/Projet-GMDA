@@ -4,3 +4,4 @@ venv
 __pycache__
 *.sublime-workspace
 *.txt
+*.pyc

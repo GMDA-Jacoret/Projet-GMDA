@@ -1,8 +1,8 @@
 import numpy as np
 from random import sample, randint
-from randomRotation import randomRotation
-from kdtree import KdTree, create
-from diameter import brute_force_diameter
+from modules.randomRotation import randomRotation
+from modules.kdtree import KdTree, create
+from modules.diameter import brute_force_diameter
 import logging
 logging.basicConfig(filename='test_log.txt', level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s')
